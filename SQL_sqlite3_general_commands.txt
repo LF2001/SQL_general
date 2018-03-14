@@ -1,0 +1,107 @@
+SQLITE - Import CSV
+
+The cities data comes from the SQLITE official tutorials (freely available) -
+http://www.sqlitetutorial.net/sqlite-import-csv/
+
+Need to copy and paste it to a text editor (I used TextWrangler), then manually change the .txt extension to .csv
+
+sqlite3 
+-- open sqlite3 (in Terminal)
+
+.mode csv
+-- make sure it's reading file in the csv format
+
+.import cities.csv data
+-- import the cities data and create table called 'data'
+
+.tables
+-- show the table(s) in the current session
+
+.databases
+-- show databases in current session
+
+PRAGMA table_info(data);
+-- show the table column names and datatypes
+
+.schema data
+-- show the structure of the table
+
+SELECT * FROM data LIMIT 5;
+-- display the first few rows of data to make sure it's looking OK
+
+SELECT MAX(population) FROM data;
+-- select the largest population
+
+SELECT name, max(population) FROM data;
+-- select the city with the largest population
+
+SELECT name, min(population) FROM data;
+-- select the city with the smallest population
+
+SELECT name,population FROM data WHERE population > 90000
+-- select those cities with a population larger than 90000
+
+.output data_save.txt
+-- create output .txt file that will save all subsequent queries to it
+
+.once data_once_save.txt
+-- create output .txt file that will save only the next subsequent query to it
+
+SELECT typeof(name) FROM data;
+-- list the data type for all values from the name column
+
+SELECT typeof(population) FROM data;
+-- list the data type for all values from the population column
+
+ALTER TABLE data ADD new_column;
+- add a new empty column
+
+UPDATE data SET new_column = population;
+-- copy data in population to new column
+
+SELECT CAST(new_column AS INT) + 2 AS pop_as_int FROM data;
+-- select the population data as integer and add 2 to the output
+
+CREATE TABLE new_table AS SELECT population FROM data;
+-- create new table taking just the population column from data
+
+CREATE TABLE new_table2 AS SELECT CAST(new_column AS INT) + 2 AS pop_as_int FROM data;
+-- create new table taking the text population values and converting to integers and adding 2 to all instances
+
+SELECT * FROM data WHERE name LIKE '%Madison%';
+-- select all row instances where city name matches 'Madison'
+
+SELECT * FROM data WHERE name LIKE '% %';
+-- select all row instances where the city name contains a space
+
+CREATE TABLE hyphen_cities AS SELECT * FROM data WHERE name LIKE '%-%';
+-- create new table containing all instances where the city name contains a hyphen
+
+SELECT name,population FROM data GROUP BY population HAVING COUNT(population) > 1;
+-- check if any population values are the same
+
+UPDATE data SET population = '93994' WHERE name = 'Akron';
+-- update population value for the city of Akron to match that of Albany
+
+SELECT name,population FROM data GROUP BY population HAVING COUNT(population) > 1;
+-- check that now there are two cities with same population
+
+SELECT name,population FROM data WHERE population = '93994';
+-- show the two cites that have the same population
+
+sqlite3 cities_test_database.sl3
+-- open and create a new database 'cities_test_database' (if doesn't exist already)
+
+sqlite3 cities_test_database.sl3
+-- open the pre-existing database 'cities_test_database'
+
+
+-- SAVING AN OUTPUT CSV FILE:
+.output cities_test_save.csv
+-- open a blank output .csv file (to subsequently populate with data from a specified table)
+
+SELECT name,population FROM data;
+-- specify the data to populate the output file
+
+.quit
+-- quit session and save specified data to the csv file
